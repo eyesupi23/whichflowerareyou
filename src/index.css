@@ -1,0 +1,175 @@
+@import "tailwindcss";
+
+/* โทนญี่ปุ่น: กระดาษวาชิ, สีน้ำเงินคราม (ai), สีชาด (shu), ซากุระ, มัทฉะ */
+@theme {
+  --color-washi: #f4ead5;
+  --color-ink: #1b1f3b;
+  --color-cream: #fff8e7;
+  --color-shu: #d8402f;
+  --color-sakura: #f6a8c0;
+  --color-matcha: #8fb35a;
+  --color-gold: #e8b64c;
+  /* DotGothic16 = ตัวพิกเซลญี่ปุ่น (อังกฤษ/ตัวเลข/ญี่ปุ่น), ภาษาไทยจะตกไปใช้ Chakra Petch */
+  --font-display: "DotGothic16", "Chakra Petch", sans-serif;
+  --font-body: "Chakra Petch", system-ui, sans-serif;
+}
+
+body {
+  @apply bg-washi text-ink font-body;
+  /* ลายตารางพิกเซลจาง ๆ */
+  background-image: repeating-conic-gradient(rgb(27 31 59 / 0.04) 0 25%, transparent 0 50%);
+  background-size: 16px 16px;
+}
+
+img {
+  image-rendering: pixelated;
+}
+/* ภาพถ่าย ไม่ต้องทำให้แตกเป็นพิกเซล */
+img.photo {
+  image-rendering: auto;
+}
+
+/* ---------- กล่องสไตล์เกม 8bit ---------- */
+
+/* กล่องข้อความแบบ JRPG: พื้นคราม กรอบขาวสองชั้น */
+.pixel-box {
+  background: var(--color-ink);
+  color: var(--color-cream);
+  box-shadow:
+    inset 0 0 0 3px var(--color-ink),
+    inset 0 0 0 6px var(--color-cream),
+    6px 6px 0 0 rgb(27 31 59 / 0.3);
+}
+
+/* การ์ดพื้นครีม กรอบหนา เงาแข็ง */
+.pixel-card {
+  background: var(--color-cream);
+  border: 4px solid var(--color-ink);
+  box-shadow: 6px 6px 0 0 var(--color-ink);
+}
+
+.pixel-btn {
+  background: var(--color-shu);
+  color: var(--color-cream);
+  border: 4px solid var(--color-ink);
+  box-shadow: 4px 4px 0 0 var(--color-ink);
+  transition: transform 0.1s steps(2), box-shadow 0.1s steps(2);
+}
+.pixel-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 var(--color-ink);
+}
+.pixel-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 0 var(--color-ink);
+}
+
+/* ป้ายชื่อมุมบนกล่อง เช่น 物語 / 第1問 */
+.pixel-tag {
+  background: var(--color-shu);
+  color: var(--color-cream);
+  border: 3px solid var(--color-ink);
+}
+
+/* ตัวเลือกคำตอบ: ปกติแสดงจุด ◆ ตอนชี้/เลือกเปลี่ยนเป็นลูกศร ▶ กะพริบ */
+.menu-item .cursor {
+  display: none;
+}
+.menu-item:hover .bullet,
+.menu-item:focus-visible .bullet {
+  display: none;
+}
+.menu-item:hover .cursor,
+.menu-item:focus-visible .cursor {
+  display: inline;
+  animation: blink 0.6s steps(1) infinite;
+}
+
+/* ---------- animation ทั้งหมดใช้ steps() ให้ขยับเป็นเฟรมแบบเกมเก่า ---------- */
+
+@keyframes bob {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -4px; }
+}
+.bob {
+  animation: bob 0.8s steps(1) infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.blink {
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes enter {
+  from { opacity: 0; translate: 0 8px; }
+  to { opacity: 1; translate: 0 0; }
+}
+.enter {
+  animation: enter 0.25s steps(3) both;
+}
+
+@keyframes pop {
+  0% { scale: 0; }
+  60% { scale: 1.2; }
+  100% { scale: 1; }
+}
+.pop {
+  animation: pop 0.4s steps(4) both;
+}
+
+/* ตราประทับฮังโกะ ตกลงมาประทับ */
+@keyframes stamp {
+  0% { opacity: 0; scale: 2.2; rotate: -20deg; }
+  100% { opacity: 1; scale: 1; rotate: -8deg; }
+}
+.hanko {
+  background: var(--color-shu);
+  color: var(--color-cream);
+  border: 3px solid var(--color-cream);
+  outline: 3px solid var(--color-shu);
+  rotate: -8deg;
+  animation: stamp 0.35s steps(4) 0.3s both;
+}
+
+/* แถบโหลดดิ้ง: บล็อกสีชาดเติมทีละช่อง (ความยาวตั้งจาก LOADING_MS ใน App.tsx) */
+@keyframes loading-fill {
+  from { width: 0; }
+  to { width: 100%; }
+}
+.loading-fill {
+  width: 100%;
+  background: repeating-linear-gradient(
+    to right,
+    var(--color-shu) 0 14px,
+    transparent 14px 18px
+  );
+  animation: loading-fill 2.4s steps(12) both;
+}
+
+/* กลีบซากุระพิกเซล: จุด 3px ต่อกันเป็นรูปกลีบด้วย box-shadow */
+@keyframes fall {
+  from { transform: translate(0, -5vh); }
+  to { transform: translate(var(--drift), 105vh); }
+}
+.petal {
+  position: absolute;
+  top: 0;
+  width: 3px;
+  height: 3px;
+  background: var(--color-sakura);
+  box-shadow:
+    3px 0 var(--color-sakura),
+    0 3px var(--color-sakura),
+    3px 3px #e8829f,
+    6px 3px var(--color-sakura),
+    3px 6px var(--color-sakura);
+  animation: fall var(--dur) steps(48) var(--delay) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  .petal { display: none; }
+}
